@@ -1,14 +1,19 @@
-const { connectDb } = require('./connectDb')
+import { connectDb } from './connectDb'
+import { Request, Response } from 'express';
 
-exports.createTask = (req, res) => {
-    const newTask = req.body;
+export const createTask = (req: Request, res: Response) => {
+    const newTask = {
+     task: req.body.task,
+     done: false   
+    }
+
     const db = connectDb();
-    db.collection('task').add(newTask)
+    db.collection('tasks').add(newTask)
      .then(doc => res.status(201).send(doc.id))
      .catch(err => res.status(500).send(err));   
 }
 
-exports.getTasks = (req, res) => {
+export const getTasks = (req: Request, res: Response) => {
     const db = connectDb();
     db.collection('tasks').get()
     .then(snapshot => {
@@ -22,11 +27,23 @@ exports.getTasks = (req, res) => {
     .catch(err => res.status(500).send(err))
 }
 
-exports.updateTasks = (req, res) => {
+export const updateTasks = (req: Request, res: Response) => {
     const { taskId } = req.params
     const isDone = req.body.done
     const db = connectDb();
     db.collection('tasks').doc(taskId).update({ done: isDone})
     .then(doc => res.status(202).send(doc))
     .catch(err => res.status(500).send(err))
+}
+
+export const deleteTasks = (req: Request, res: Response) => {
+    const { taskId } = req.params
+    const db = connectDb();
+    db.collection('tasks')
+    .doc(taskId)
+    .delete()
+    .then(() => {
+        res.send('Deleted Task')
+    })
+    .catch((err) => res.status(500).send(err))
 }

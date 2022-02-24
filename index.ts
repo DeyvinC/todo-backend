@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 const PORT = process.env.PORT || 3000;
-const { getTasks, createTask, updateTasks } = require('./src/tasks');
+import { getTasks, createTask, updateTasks, deleteTasks } from './src/tasks'
 
 const app = express();
 app.use(cors());
@@ -11,7 +11,8 @@ app.use(express.json());
 
 app.post('/tasks', createTask);
 app.get('/tasks', getTasks);
-app.patch('tasks/:taskId', updateTasks);
+app.patch('/tasks/:taskId', updateTasks);
+app.delete('/tasks/:taskId', deleteTasks)
 
 
 
